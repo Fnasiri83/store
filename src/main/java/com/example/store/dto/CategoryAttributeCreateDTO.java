@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class CategoryAttributeCreateDTO {
     @NotNull
     private Long categoryId;
+    private boolean required;
     @NotNull
-    private Long attributeId;
-    private boolean required;}
+    private Long attributeId;}
+

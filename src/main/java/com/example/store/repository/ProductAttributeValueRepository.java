@@ -6,4 +6,8 @@ import java.util.List;
 
 public interface ProductAttributeValueRepository extends JpaRepository<ProductAttributeValue, Long> {
     List<ProductAttributeValue> findByProductId(Long productId);
+    void deleteByAttributeId(Long attributeId);
+    void deleteByProductId(Long productId);
+
+
 }

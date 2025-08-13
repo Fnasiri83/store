@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "product_attribute_values")
 @Data
@@ -19,9 +21,28 @@ public class ProductAttributeValue {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "attribute_id")
+    @JoinColumn(name = "attribute_id", nullable = false)
     private Attribute attribute;
+//    @NotNull
+//    @ManyToOne
+//    @JoinColumn(name = "attribute_id")
+//    private Attribute attribute;
+
     private String value;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

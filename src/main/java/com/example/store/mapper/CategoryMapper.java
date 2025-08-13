@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
 
+@Mapping(source = "id",target = "id")
     @Mapping(source = "parent.id", target = "parentId")
     CategoryDTO toDto(Category category);
 

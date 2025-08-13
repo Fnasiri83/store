@@ -1,7 +1,6 @@
 package com.example.store.dto;
 
 import com.example.store.model.AttributeType;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,4 +16,5 @@ public class ProductAttributeValueDTO {
     private String attributeName; // برای نمایش
     private AttributeType attributeType; // برای نمایش
     private String value;
+    private Long productId;
 }

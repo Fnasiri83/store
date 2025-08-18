@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "attributes")
@@ -43,4 +45,8 @@ public class Attribute {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+//    @ElementCollection
+//    @CollectionTable(name = "attribute_options", joinColumns = @JoinColumn(name = "attribute_id"))
+//    @Column(name = "option")
+//    private List<String> options = new ArrayList<>(); // برای SELECT/MULTISELECT
 }

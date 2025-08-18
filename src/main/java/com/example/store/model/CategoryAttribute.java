@@ -40,4 +40,6 @@ public class CategoryAttribute {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+    @Column(name = "inherited")
+    private boolean inherited;
 }

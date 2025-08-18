@@ -1,6 +1,7 @@
 package com.example.store.dto;
 
 import com.example.store.model.AttributeType;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

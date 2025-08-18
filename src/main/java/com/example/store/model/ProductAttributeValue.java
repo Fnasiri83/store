@@ -29,7 +29,7 @@ public class ProductAttributeValue {
 //    @JoinColumn(name = "attribute_id")
 //    private Attribute attribute;
 
-    private String value;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -45,4 +45,6 @@ public class ProductAttributeValue {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+//    @Column(columnDefinition = "TEXT") // برای ذخیره JSON
+    private String value; // همچنان String برای سریال‌سازی آرایه
 }

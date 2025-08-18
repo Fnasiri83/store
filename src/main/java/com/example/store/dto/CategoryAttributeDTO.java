@@ -21,4 +21,7 @@ public class CategoryAttributeDTO {
     private String attributeName; // برای نمایش نام ویژگی
     private AttributeType attributeType; // برای نمایش نوع ویژگی
     private boolean required;
-    private String categoryName;}
+    private String categoryName;
+    private boolean inherited ;
+}
+

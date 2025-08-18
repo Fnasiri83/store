@@ -2,6 +2,8 @@ package com.example.store.controller;
 
 import com.example.store.dto.AttributeCreateDTO;
 import com.example.store.dto.AttributeDTO;
+import com.example.store.dto.CategoryAttributeCreateDTO;
+import com.example.store.dto.CategoryAttributeDTO;
 import com.example.store.service.AttributeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,5 +53,31 @@ public class AttributeController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         attributeService.delete(id);
+    }
+
+    /**
+     * =============================
+     * مدیریت CategoryAttribute
+     * =============================
+     */
+
+    // دریافت ویژگی‌های یک دسته‌بندی (با ارث‌بری از والدها)
+    @GetMapping("/categories/{categoryId}")
+    public List<CategoryAttributeDTO> getCategoryAttributes(@PathVariable Long categoryId) {
+        return attributeService.getCategoryAttributes(categoryId);
+    }
+
+    // افزودن ویژگی به یک دسته‌بندی
+    @PostMapping("/categories")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CategoryAttributeDTO addCategoryAttribute(@Valid @RequestBody CategoryAttributeCreateDTO dto) {
+        return attributeService.addCategoryAttribute(dto);
+    }
+
+    // حذف ویژگی از یک دسته‌بندی
+    @DeleteMapping("/categories/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCategoryAttribute(@PathVariable Long id) {
+        attributeService.deleteCategoryAttribute(id);
     }
 }

@@ -19,6 +19,7 @@ public class CategoryAttributeService {
     private final CategoryAttributeRepository categoryAttributeRepository;
     private final CategoryAttributeMapper categoryAttributeMapper;
 
+
     /**
      * اتصال ویژگی به دسته‌بندی
      */

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,4 +20,6 @@ public class AttributeDTO {
     private String name;
     @NotNull
     private AttributeType type;
-    private String defaultValue;}
+    private String defaultValue;
+//    private List<String> options;
+}

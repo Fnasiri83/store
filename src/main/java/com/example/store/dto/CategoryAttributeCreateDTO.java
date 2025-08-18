@@ -13,5 +13,7 @@ public class CategoryAttributeCreateDTO {
     private Long categoryId;
     private boolean required;
     @NotNull
-    private Long attributeId;}
+    private Long attributeId;
+//    private boolean inherited;
+}
 

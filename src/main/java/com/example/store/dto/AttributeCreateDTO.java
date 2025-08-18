@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,4 +17,5 @@ public class AttributeCreateDTO {
     private String name;
     @NotNull
     private AttributeType type;
+//    private List<String> options;
 }

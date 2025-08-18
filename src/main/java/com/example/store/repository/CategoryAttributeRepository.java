@@ -7,22 +7,55 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import java.util.List;
 
 public interface CategoryAttributeRepository extends JpaRepository<CategoryAttribute, Long> {
+
     List<CategoryAttribute> findByCategoryId(Long categoryId);
 
+    // حذف تمام ویژگی‌های یک دسته‌بندی
+    @Modifying
+    @Transactional
     @Query("DELETE FROM CategoryAttribute ca WHERE ca.category.id = :categoryId")
-    @Modifying
-    @Transactional
     void deleteByCategoryId(@Param("categoryId") Long categoryId);
-    // متد جدید برای حذف بر اساس attributeId
-    @Query("DELETE FROM CategoryAttribute ca WHERE ca.attribute.id = :attributeId")
+
+    // حذف تمام ویژگی‌های یک Attribute
     @Modifying
     @Transactional
+    @Query("DELETE FROM CategoryAttribute ca WHERE ca.attribute.id = :attributeId")
     void deleteByAttributeId(@Param("attributeId") Long attributeId);
-    void deleteByCategory(@NotNull Category category);
-    List<CategoryAttribute> findByAttributeId(Long attributeId);
 
+    // گرفتن ویژگی‌های چندین دسته‌بندی (برای والدها)
+    List<CategoryAttribute> findByCategoryIdIn(List<Long> categoryIds);
+
+    List<CategoryAttribute> findByAttributeId(Long attributeId);
 }
+
+//public interface CategoryAttributeRepository extends JpaRepository<CategoryAttribute, Long> {
+//    List<CategoryAttribute> findByCategoryId(Long categoryId);
+//    @Query("DELETE FROM CategoryAttribute ca WHERE ca.category.id = :categoryId")
+//    @Modifying
+//    @Transactional
+//    void deleteByCategoryId(@Param("categoryId") Long categoryId);
+//    @Query("DELETE FROM CategoryAttribute ca WHERE ca.attribute.id = :attributeId")
+//    @Modifying
+//    @Transactional
+//    void deleteByAttributeId(@Param("attributeId") Long attributeId);
+//    void deleteByCategory(@NotNull Category category);
+//    List<CategoryAttribute> findByAttributeId(Long attributeId);
+//    // متد جدید برای گرفتن ویژگی‌های چندین دسته‌بندی
+//    List<CategoryAttribute> findByCategoryIdIn(List<Long> categoryIds);
+//    @Query("DELETE FROM CategoryAttribute ca WHERE ca.category.id = :categoryId")
+//    @Modifying
+//    @Transactional
+//    void deleteByCategoryId(@Param("categoryId") Long categoryId);
+//    // متد جدید برای حذف بر اساس attributeId
+//    @Query("DELETE FROM CategoryAttribute ca WHERE ca.attribute.id = :attributeId")
+//    @Modifying
+//    @Transactional
+//    void deleteByAttributeId(@Param("attributeId") Long attributeId);
+//    void deleteByCategory(@NotNull Category category);
+//    List<CategoryAttribute> findByAttributeId(Long attributeId);
+//
+
+

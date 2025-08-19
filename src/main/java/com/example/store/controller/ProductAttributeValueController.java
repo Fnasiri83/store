@@ -23,6 +23,7 @@ public class ProductAttributeValueController {
     public ResponseEntity<ProductAttributeValueDTO> create(
             @PathVariable Long productId,
             @RequestBody ProductAttributeValueCreateDTO createDTO) {
+        System.out.println("create=ProductAttributeValueController ");
         return ResponseEntity.ok(productAttributeValueService.create(productId, createDTO));
     }
 
@@ -33,6 +34,7 @@ public class ProductAttributeValueController {
     @GetMapping("/by-product/{productId}")
     public ResponseEntity<List<ProductAttributeValueDTO>> getByProduct(
             @PathVariable Long productId) {
+        System.out.println("getByProduct=ProductAttributeValueController ");
         return ResponseEntity.ok(productAttributeValueService.getByProduct(productId));
     }
 
@@ -44,6 +46,7 @@ public class ProductAttributeValueController {
     public ResponseEntity<ProductAttributeValueDTO> update(
             @PathVariable Long id,
             @RequestBody ProductAttributeValueCreateDTO updateDTO) {
+        System.out.println("update=ProductAttributeValueController ");
         return ResponseEntity.ok(productAttributeValueService.update(id, updateDTO));
     }
 
@@ -54,6 +57,7 @@ public class ProductAttributeValueController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productAttributeValueService.delete(id);
+        System.out.println("delete=ProductAttributeValueController ");
         return ResponseEntity.noContent().build(); // وضعیت 204 بدون محتوا
     }
 }

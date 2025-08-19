@@ -25,6 +25,7 @@ public class CategoryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryDTO create(@Valid @RequestBody CategoryDTO dto) {
+        System.out.println("create=CategoryController ");
         return categoryService.create(dto);
     }
 
@@ -33,6 +34,7 @@ public class CategoryController {
      */
     @GetMapping
     public List<CategoryDTO> getAll() {
+        System.out.println("getAll=CategoryController");
         return categoryService.getAll();
     }
 
@@ -40,7 +42,8 @@ public class CategoryController {
      * دریافت دسته‌بندی‌ها به صورت درختی
      */
     @GetMapping("/tree")
-    public List<CategoryTreeNodeDTO> getTree() {
+public List<CategoryTreeNodeDTO> getTree() {
+        System.out.println("getTree=CategoryController");
         return categoryService.getTree();
     }
 
@@ -49,6 +52,7 @@ public class CategoryController {
      */
     @GetMapping("/{id}")
     public CategoryDTO getById(@PathVariable Long id) {
+        System.out.println("getCategoryById=CategoryController");
         return categoryService.getById(id);
     }
 
@@ -57,6 +61,7 @@ public class CategoryController {
      */
     @PutMapping("/{id}")
     public CategoryDTO update(@PathVariable Long id, @Valid @RequestBody CategoryDTO dto) {
+        System.out.println("update=CategoryController ");
         return categoryService.update(id, dto);
     }
 
@@ -71,6 +76,7 @@ public class CategoryController {
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<String> handleIllegalStateException(IllegalStateException ex) {
+        System.out.println("deleteCategoryAttribute=CategoryController ");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Cannot delete category because it has subcategories.");
     }

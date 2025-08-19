@@ -45,6 +45,7 @@ public class ProductController {
      */
     @GetMapping
     public List<ProductDTO> getAll() {
+        System.out.println("getAll=ProductController ");
         return productService.getAll();
     }
 
@@ -53,6 +54,7 @@ public class ProductController {
      */
     @GetMapping("/{id}")
     public ProductDTO getById(@PathVariable Long id) {
+        System.out.println("getById=ProductController ");
         return productService.getById(id);
     }
 
@@ -61,6 +63,7 @@ public class ProductController {
      */
     @PutMapping("/{id}")
     public ProductDTO update(@PathVariable Long id, @Valid @RequestBody ProductCreateDTO dto) {
+        System.out.println("update=ProductController ");
         return productService.update(id, dto);
     }
 
@@ -70,6 +73,7 @@ public class ProductController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
+        System.out.println("delete=ProductController ");
         productService.delete(id);
     }
 }

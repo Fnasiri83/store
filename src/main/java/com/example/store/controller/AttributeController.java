@@ -23,6 +23,7 @@ public class AttributeController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AttributeDTO create(@Valid @RequestBody AttributeCreateDTO dto) {
+        System.out.println("create=AttributeController ");
         return attributeService.create(dto);
     }
     /**
@@ -30,6 +31,7 @@ public class AttributeController {
      */
     @GetMapping
     public List<AttributeDTO> getAll() {
+        System.out.println("getAll=AttributeController ");
         return attributeService.getAll();
     }
     /**
@@ -37,6 +39,7 @@ public class AttributeController {
      */
     @GetMapping("/{id}")
     public AttributeDTO getById(@PathVariable Long id) {
+        System.out.println("getById=AttributeController ");
         return attributeService.getById(id);
     }
     /**
@@ -44,6 +47,7 @@ public class AttributeController {
      */
     @PutMapping("/{id}")
     public AttributeDTO update(@PathVariable Long id, @Valid @RequestBody AttributeCreateDTO dto) {
+        System.out.println("update==AttributeController ");
         return attributeService.update(id, dto);
     }
     /**
@@ -52,6 +56,7 @@ public class AttributeController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
+        System.out.println("delet=AttributeController ");
         attributeService.delete(id);
     }
 
@@ -61,16 +66,13 @@ public class AttributeController {
      * =============================
      */
 
-    // دریافت ویژگی‌های یک دسته‌بندی (با ارث‌بری از والدها)
-    @GetMapping("/categories/{categoryId}")
-    public List<CategoryAttributeDTO> getCategoryAttributes(@PathVariable Long categoryId) {
-        return attributeService.getCategoryAttributes(categoryId);
-    }
+
 
     // افزودن ویژگی به یک دسته‌بندی
     @PostMapping("/categories")
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryAttributeDTO addCategoryAttribute(@Valid @RequestBody CategoryAttributeCreateDTO dto) {
+        System.out.println("اتصال ویژگی به دسته بندی=AttributeController ");
         return attributeService.addCategoryAttribute(dto);
     }
 
@@ -78,6 +80,7 @@ public class AttributeController {
     @DeleteMapping("/categories/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategoryAttribute(@PathVariable Long id) {
+        System.out.println("deleteCategoryAttribute=AttributeController ");
         attributeService.deleteCategoryAttribute(id);
     }
 }

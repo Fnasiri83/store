@@ -23,6 +23,7 @@ public class CategoryAttributeController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryAttributeDTO create(@Valid @RequestBody CategoryAttributeCreateDTO dto) {
+        System.out.println("createCategoryAttribute=CategoryAttributeController ");
         return categoryAttributeService.create(dto);
     }
 
@@ -31,6 +32,7 @@ public class CategoryAttributeController {
      */
     @GetMapping("/category/{categoryId}")
     public List<CategoryAttributeDTO> getByCategoryId(@PathVariable Long categoryId) {
+        System.out.println("getByCategoryId=CategoryAttributeController (ارث بری) ");
         return categoryAttributeService.getByCategoryId(categoryId);
     }
 
@@ -40,6 +42,7 @@ public class CategoryAttributeController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
+        System.out.println("deleteCategoryAttribute=CategoryAttributeController ");
         categoryAttributeService.delete(id);
     }
 }

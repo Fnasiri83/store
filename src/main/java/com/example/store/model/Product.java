@@ -54,4 +54,8 @@ public class Product {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+//    @Transient
+//    @Enumerated(EnumType.STRING)   // جدید
+//    private ProductCondition condition;
+//    private String photoUrl;
 }

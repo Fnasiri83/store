@@ -1,5 +1,6 @@
 package com.example.store.dto;
 
+import com.example.store.model.ProductCondition;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -30,4 +31,6 @@ public class ProductDTO {
     private Long categoryId;
     private String categoryName; // برای نمایش
     private List<ProductAttributeValueDTO> attributeValues = new ArrayList<>();
+//    private ProductCondition condition; // 👈 اضافه شد
+//    private String photoUrl;
 }

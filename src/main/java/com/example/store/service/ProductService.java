@@ -1,7 +1,6 @@
 package com.example.store.service;
 
 import com.example.store.dto.ProductAttributeValueCreateDTO;
-import com.example.store.dto.ProductAttributeValueDTO;
 import com.example.store.dto.ProductCreateDTO;
 import com.example.store.dto.ProductDTO;
 import com.example.store.mapper.ProductAttributeValueMapper;
@@ -17,11 +16,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
+
 import java.util.stream.Collectors;
 @Slf4j
 @Service
@@ -34,6 +31,95 @@ public class ProductService {
     private final ProductAttributeValueRepository productAttributeValueRepository;
     private final ProductAttributeValueService productAttributeValueService;
     private final ProductAttributeValueMapper productAttributeValueMapper;
+//    private static final String UPLOAD_DIR = "uploads/";
+
+
+//    /**
+//    اپلود عکس*
+//    */
+//    public ProductDTO addProduct(ProductCreateDTO dto, MultipartFile photo) throws IOException {
+//        Product product = productMapper.toEntity(dto);
+//
+//        // ذخیره عکس
+//        if (photo != null && !photo.isEmpty()) {
+//            String filename = UUID.randomUUID() + "_" + photo.getOriginalFilename();
+//            Path path = Paths.get("uploads/" + filename);
+//            Files.createDirectories(path.getParent());
+//            Files.write(path, photo.getBytes());
+//            product.setPhotoUrl("/uploads/" + filename);
+//        }
+//
+//        product = productRepository.save(product);
+//
+//        // ذخیره AttributeValues
+//        List<ProductAttributeValue> values = dto.getAttributeValues().stream()
+//                .map(pavMapper::toEntity)
+//                .peek(val -> val.setProduct(product)) // اتصال به product
+//                .collect(Collectors.toList());
+//
+//        pavRepository.saveAll(values);
+//        product.setAttributeValues(values);
+//
+//        return productMapper.toDTO(product);
+//    }
+//    @Transactional
+//    public Product createProduct(ProductCreateDTO dto, MultipartFile photo) {
+//        log.info("Creating product with title: {}", dto.getTitle());
+//
+//        // اعتبارسنجی دسته‌بندی
+//        Category category = categoryRepository.findById(dto.getCategoryId())
+//                .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + dto.getCategoryId()));
+//
+//        // ایجاد محصول
+//        Product product = new Product();
+//        product.setTitle(dto.getTitle());
+//        product.setDescription(dto.getDescription());
+//        product.setPrice(dto.getPrice());
+//        product.setStock(dto.getStock());
+//        product.setCondition(dto.getCondition());
+//        product.setCategory(category);
+//
+//        // ذخیره فایل عکس (در صورت وجود)
+//        if (photo != null && !photo.isEmpty()) {
+//            String fileName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
+//            try {
+//                Path uploadPath = Paths.get(UPLOAD_DIR);
+//                if (!Files.exists(uploadPath)) {
+//                    Files.createDirectories(uploadPath);
+//                }
+//                Files.write(Paths.get(UPLOAD_DIR + fileName), photo.getBytes());
+//                product.setPhotoPath(fileName);
+//            } catch (IOException e) {
+//                log.error("Failed to save photo: {}", e.getMessage());
+//                throw new RuntimeException("Failed to save photo", e);
+//            }
+//        }
+//
+//        // ذخیره محصول
+//        Product savedProduct = productRepository.save(product);
+//
+//        // ذخیره ویژگی‌ها
+//        if (dto.getAttributeValues() != null) {
+//            for (AttributeValueDTo attrDto : dto.getAttributeValues()) {
+//                Attribute attribute = attributeRepository.findById(attrDto.getAttributeId())
+//                        .orElseThrow(() -> new EntityNotFoundException("Attribute not found with id: " + attrDto.getAttributeId()));
+//
+//                ProductAttribute productAttribute = new ProductAttribute();
+//                productAttribute.setProduct(savedProduct);
+//                productAttribute.setAttribute(attribute);
+//                productAttribute.setValue(attrDto.getValue());
+//                productAttributeRepository.save(productAttribute);
+//            }
+//        }
+//
+//        log.info("Product created with id: {}", savedProduct.getId());
+//        return savedProduct;
+//    }
+//
+
+
+
+
 
     /**
      * ایجاد محصول جدید
@@ -74,6 +160,59 @@ public class ProductService {
         return productMapper.toDTO(savedProduct);
     }
 
+    /**
+     * دریافت همه محصولات
+     */
+    public List<ProductDTO> getAll() {
+        return productRepository.findAll()
+                .stream()
+                .map(productMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * دریافت محصول بر اساس ID
+     */
+    public ProductDTO getById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        return productMapper.toDTO(product);
+    }
+
+    /**
+     * بروزرسانی محصول
+     */
+    public ProductDTO update(Long id, ProductCreateDTO dto) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+
+        product.setTitle(dto.getTitle());
+        product.setDescription(dto.getDescription());
+        product.setPrice(dto.getPrice());
+        product.setStock(dto.getStock());
+
+        return productMapper.toDTO(productRepository.save(product));
+    }
+
+    /**
+     * حذف محصول
+     */
+    @Transactional
+    public void delete(Long id) {
+        if (!productRepository.existsById(id)) {
+            throw new EntityNotFoundException("Product not found");
+        }
+        productAttributeValueRepository.deleteByProductId(id); // حذف وابستگی‌ها
+        productRepository.deleteById(id);
+    }
+}
+
+//    public void delete(Long id) {
+//        if (!productRepository.existsById(id)) {
+//            throw new EntityNotFoundException("Product not found");
+//        }
+//        productRepository.deleteById(id);
+//    }
 //    public ProductDTO create(ProductCreateDTO dto) {
 //        log.info("Received ProductCreateDTO: {}", dto);
 //
@@ -90,7 +229,7 @@ public class ProductService {
 //            product.setAttributeValues(new ArrayList<>());
 //        }
 //
-//        // 4. ذخیره اولیه Product
+// 4. ذخیره اولیه Product
 //        Product savedProduct = productRepository.save(product);
 //
 //        // 5. پردازش و ذخیره ویژگی‌ها
@@ -204,57 +343,3 @@ public class ProductService {
 //        Product product = productMapper.toEntity(dto);
 //        return productMapper.toDTO(productRepository.save(product));
 //    }
-
-    /**
-     * دریافت همه محصولات
-     */
-    public List<ProductDTO> getAll() {
-        return productRepository.findAll()
-                .stream()
-                .map(productMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * دریافت محصول بر اساس ID
-     */
-    public ProductDTO getById(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
-        return productMapper.toDTO(product);
-    }
-
-    /**
-     * بروزرسانی محصول
-     */
-    public ProductDTO update(Long id, ProductCreateDTO dto) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
-
-        product.setTitle(dto.getTitle());
-        product.setDescription(dto.getDescription());
-        product.setPrice(dto.getPrice());
-        product.setStock(dto.getStock());
-
-        return productMapper.toDTO(productRepository.save(product));
-    }
-
-    /**
-     * حذف محصول
-     */
-    @Transactional
-    public void delete(Long id) {
-        if (!productRepository.existsById(id)) {
-            throw new EntityNotFoundException("Product not found");
-        }
-        productAttributeValueRepository.deleteByProductId(id); // حذف وابستگی‌ها
-        productRepository.deleteById(id);
-    }
-
-//    public void delete(Long id) {
-//        if (!productRepository.existsById(id)) {
-//            throw new EntityNotFoundException("Product not found");
-//        }
-//        productRepository.deleteById(id);
-//    }
-}

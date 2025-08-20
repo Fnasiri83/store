@@ -53,6 +53,7 @@ import org.springframework.cache.annotation.Cacheable;
                         .orElseThrow(() -> new EntityNotFoundException("Attribute not found with id: " + dto.getAttributeId())));
                 categoryAttribute.setRequired(dto.isRequired());
                 CategoryAttribute saved = categoryAttributeRepository.save(categoryAttribute);
+                System.out.println("ویژگی به دسته بندی اضافه شد");
                 return new CategoryAttributeDTO(
                         saved.getId(),
                         saved.getCategory().getId(),
@@ -87,6 +88,7 @@ import org.springframework.cache.annotation.Cacheable;
             @Transactional
             public AttributeDTO create(AttributeCreateDTO createDTO) {
                 Attribute attribute = attributeMapper.toEntity(createDTO);
+                System.out.println("ویژگی جدید اضافه شد");
                 return attributeMapper.toDTO(attributeRepository.save(attribute));
             }
             /**

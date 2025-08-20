@@ -1,5 +1,6 @@
 package com.example.store.dto;
 
+import com.example.store.model.ProductCondition;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,4 +30,6 @@ public class ProductCreateDTO {
     @NotNull
     private Long categoryId;
     private List<ProductAttributeValueCreateDTO> attributeValues = new ArrayList<>();
+//    private ProductCondition condition;
+//    private String photoUrl;
 }

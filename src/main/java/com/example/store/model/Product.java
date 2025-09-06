@@ -52,8 +52,12 @@ public class Product {
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+        updatedAt = LocalDateTime.now();}
+//برای فایل اپلود
+    @ElementCollection
+    @CollectionTable(name = "product_files", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "file_url")
+    private List<String> fileUrls = new ArrayList<>();
 //    @Transient
 //    @Enumerated(EnumType.STRING)   // جدید
 //    private ProductCondition condition;

@@ -16,9 +16,17 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 @Slf4j
 @Service
@@ -31,95 +39,83 @@ public class ProductService {
     private final ProductAttributeValueRepository productAttributeValueRepository;
     private final ProductAttributeValueService productAttributeValueService;
     private final ProductAttributeValueMapper productAttributeValueMapper;
-//    private static final String UPLOAD_DIR = "uploads/";
 
+    private static final String UPLOAD_DIR = "uploads/";
+    private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png", "gif");
 
-//    /**
-//    اپلود عکس*
-//    */
-//    public ProductDTO addProduct(ProductCreateDTO dto, MultipartFile photo) throws IOException {
-//        Product product = productMapper.toEntity(dto);
-//
-//        // ذخیره عکس
-//        if (photo != null && !photo.isEmpty()) {
-//            String filename = UUID.randomUUID() + "_" + photo.getOriginalFilename();
-//            Path path = Paths.get("uploads/" + filename);
-//            Files.createDirectories(path.getParent());
-//            Files.write(path, photo.getBytes());
-//            product.setPhotoUrl("/uploads/" + filename);
-//        }
-//
-//        product = productRepository.save(product);
-//
-//        // ذخیره AttributeValues
-//        List<ProductAttributeValue> values = dto.getAttributeValues().stream()
-//                .map(pavMapper::toEntity)
-//                .peek(val -> val.setProduct(product)) // اتصال به product
-//                .collect(Collectors.toList());
-//
-//        pavRepository.saveAll(values);
-//        product.setAttributeValues(values);
-//
-//        return productMapper.toDTO(product);
-//    }
-//    @Transactional
-//    public Product createProduct(ProductCreateDTO dto, MultipartFile photo) {
-//        log.info("Creating product with title: {}", dto.getTitle());
-//
-//        // اعتبارسنجی دسته‌بندی
-//        Category category = categoryRepository.findById(dto.getCategoryId())
-//                .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + dto.getCategoryId()));
-//
-//        // ایجاد محصول
-//        Product product = new Product();
-//        product.setTitle(dto.getTitle());
-//        product.setDescription(dto.getDescription());
-//        product.setPrice(dto.getPrice());
-//        product.setStock(dto.getStock());
-//        product.setCondition(dto.getCondition());
-//        product.setCategory(category);
-//
-//        // ذخیره فایل عکس (در صورت وجود)
-//        if (photo != null && !photo.isEmpty()) {
-//            String fileName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
-//            try {
-//                Path uploadPath = Paths.get(UPLOAD_DIR);
-//                if (!Files.exists(uploadPath)) {
-//                    Files.createDirectories(uploadPath);
-//                }
-//                Files.write(Paths.get(UPLOAD_DIR + fileName), photo.getBytes());
-//                product.setPhotoPath(fileName);
-//            } catch (IOException e) {
-//                log.error("Failed to save photo: {}", e.getMessage());
-//                throw new RuntimeException("Failed to save photo", e);
-//            }
-//        }
-//
-//        // ذخیره محصول
-//        Product savedProduct = productRepository.save(product);
-//
-//        // ذخیره ویژگی‌ها
-//        if (dto.getAttributeValues() != null) {
-//            for (AttributeValueDTo attrDto : dto.getAttributeValues()) {
-//                Attribute attribute = attributeRepository.findById(attrDto.getAttributeId())
-//                        .orElseThrow(() -> new EntityNotFoundException("Attribute not found with id: " + attrDto.getAttributeId()));
-//
-//                ProductAttribute productAttribute = new ProductAttribute();
-//                productAttribute.setProduct(savedProduct);
-//                productAttribute.setAttribute(attribute);
-//                productAttribute.setValue(attrDto.getValue());
-//                productAttributeRepository.save(productAttribute);
-//            }
-//        }
-//
-//        log.info("Product created with id: {}", savedProduct.getId());
-//        return savedProduct;
-//    }
-//
+    @Transactional
+    public ProductDTO uploadFile(Long productId, MultipartFile file) {
+        log.info("آپلود فایل برای محصول با شناسه: {}", productId);
 
+        // اعتبارسنجی محصول
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException("محصول با شناسه " + productId + " پیدا نشد"));
 
+        // اعتبارسنجی نوع فایل
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null || !isValidFileExtension(originalFilename)) {
+            log.error("نوع فایل غیرمجاز: {}", originalFilename);
+            throw new IllegalArgumentException("فقط فایل‌های JPG, PNG یا GIF مجاز هستند");
+        }
 
+        try {
+            // ذخیره فایل
+            String filename = UUID.randomUUID() + "_" + originalFilename;
+            Path path = Paths.get(UPLOAD_DIR + filename);
+            Files.createDirectories(path.getParent());
+            Files.write(path, file.getBytes());
 
+            // اضافه کردن مسیر فایل به محصول
+            product.getFileUrls().add("/uploads/" + filename);
+            Product saved = productRepository.save(product);
+
+            log.info("فایل ذخیره شد: مسیر={}", "/uploads/" + filename);
+            return toDTO(saved);
+
+        } catch (IOException e) {
+            log.error("خطا در ذخیره فایل: {}", e.getMessage());
+            throw new RuntimeException("خطا در آپلود فایل", e);
+        }
+    }
+    @Transactional
+    public ProductDTO deleteFile(Long productId, String fileUrl) {
+        log.info("حذف فایل با مسیر: {} از محصول با شناسه: {}", fileUrl, productId);
+
+        // اعتبارسنجی محصول
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException("محصول با شناسه " + productId + " پیدا نشد"));
+
+        // حذف مسیر فایل از لیست
+        if (!product.getFileUrls().remove(fileUrl)) {
+            log.error("فایل با مسیر {} یافت نشد", fileUrl);
+            throw new IllegalArgumentException("فایل با مسیر " + fileUrl + " در محصول یافت نشد");
+        }
+
+        // حذف فایل از سرور
+        try {
+            Path path = Paths.get(fileUrl.substring(1)); // حذف "/" اولیه
+            Files.deleteIfExists(path);
+            log.info("فایل از سرور حذف شد: {}", fileUrl);
+        } catch (IOException e) {
+            log.error("خطا در حذف فایل از سرور: {}", e.getMessage());
+            // ادامه می‌دیم حتی اگه فایل روی سرور حذف نشه
+        }
+
+        Product saved = productRepository.save(product);
+        return toDTO(saved);
+    }
+
+    private boolean isValidFileExtension(String filename) {
+        String extension = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
+        return ALLOWED_EXTENSIONS.contains(extension);
+    }
+
+    private ProductDTO toDTO(Product product) {
+        ProductDTO dto = new ProductDTO();
+        dto.setId(product.getId());
+        dto.setFileUrls(product.getFileUrls());
+        return dto;
+    }
 
     /**
      * ایجاد محصول جدید
@@ -343,3 +339,88 @@ public class ProductService {
 //        Product product = productMapper.toEntity(dto);
 //        return productMapper.toDTO(productRepository.save(product));
 //    }
+//    private static final String UPLOAD_DIR = "uploads/";
+
+
+//    /**
+//    اپلود عکس*
+//    */
+//    public ProductDTO addProduct(ProductCreateDTO dto, MultipartFile photo) throws IOException {
+//        Product product = productMapper.toEntity(dto);
+//
+//        // ذخیره عکس
+//        if (photo != null && !photo.isEmpty()) {
+//            String filename = UUID.randomUUID() + "_" + photo.getOriginalFilename();
+//            Path path = Paths.get("uploads/" + filename);
+//            Files.createDirectories(path.getParent());
+//            Files.write(path, photo.getBytes());
+//            product.setPhotoUrl("/uploads/" + filename);
+//        }
+//
+//        product = productRepository.save(product);
+//
+//        // ذخیره AttributeValues
+//        List<ProductAttributeValue> values = dto.getAttributeValues().stream()
+//                .map(pavMapper::toEntity)
+//                .peek(val -> val.setProduct(product)) // اتصال به product
+//                .collect(Collectors.toList());
+//
+//        pavRepository.saveAll(values);
+//        product.setAttributeValues(values);
+//
+//        return productMapper.toDTO(product);
+//    }
+//    @Transactional
+//    public Product createProduct(ProductCreateDTO dto, MultipartFile photo) {
+//        log.info("Creating product with title: {}", dto.getTitle());
+//
+//        // اعتبارسنجی دسته‌بندی
+//        Category category = categoryRepository.findById(dto.getCategoryId())
+//                .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + dto.getCategoryId()));
+//
+//        // ایجاد محصول
+//        Product product = new Product();
+//        product.setTitle(dto.getTitle());
+//        product.setDescription(dto.getDescription());
+//        product.setPrice(dto.getPrice());
+//        product.setStock(dto.getStock());
+//        product.setCondition(dto.getCondition());
+//        product.setCategory(category);
+//
+//        // ذخیره فایل عکس (در صورت وجود)
+//        if (photo != null && !photo.isEmpty()) {
+//            String fileName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
+//            try {
+//                Path uploadPath = Paths.get(UPLOAD_DIR);
+//                if (!Files.exists(uploadPath)) {
+//                    Files.createDirectories(uploadPath);
+//                }
+//                Files.write(Paths.get(UPLOAD_DIR + fileName), photo.getBytes());
+//                product.setPhotoPath(fileName);
+//            } catch (IOException e) {
+//                log.error("Failed to save photo: {}", e.getMessage());
+//                throw new RuntimeException("Failed to save photo", e);
+//            }
+//        }
+//
+//        // ذخیره محصول
+//        Product savedProduct = productRepository.save(product);
+//
+//        // ذخیره ویژگی‌ها
+//        if (dto.getAttributeValues() != null) {
+//            for (AttributeValueDTo attrDto : dto.getAttributeValues()) {
+//                Attribute attribute = attributeRepository.findById(attrDto.getAttributeId())
+//                        .orElseThrow(() -> new EntityNotFoundException("Attribute not found with id: " + attrDto.getAttributeId()));
+//
+//                ProductAttribute productAttribute = new ProductAttribute();
+//                productAttribute.setProduct(savedProduct);
+//                productAttribute.setAttribute(attribute);
+//                productAttribute.setValue(attrDto.getValue());
+//                productAttributeRepository.save(productAttribute);
+//            }
+//        }
+//
+//        log.info("Product created with id: {}", savedProduct.getId());
+//        return savedProduct;
+//    }
+//

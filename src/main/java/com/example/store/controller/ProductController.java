@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 @Slf4j
@@ -18,6 +19,32 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+
+
+    /**
+     * آپلود فایل (عکس یا گیف) برای محصول
+     */
+    @PostMapping("/{productId}/upload")
+    public ResponseEntity<ProductDTO> uploadFile(
+            @PathVariable Long productId,
+            @RequestParam("file") MultipartFile file) {
+        log.info("درخواست آپلود فایل برای محصول با شناسه: {}", productId);
+        ProductDTO productDTO = productService.uploadFile(productId, file);
+        return ResponseEntity.status(HttpStatus.OK).body(productDTO);
+    }
+
+
+    /**
+     * حذف فایل از محصول
+     */
+    @DeleteMapping("/{productId}/files")
+    public ResponseEntity<ProductDTO> deleteFile(
+            @PathVariable Long productId,
+            @RequestParam("fileUrl") String fileUrl) {
+        log.info("درخواست حذف فایل با مسیر: {} از محصول با شناسه: {}", fileUrl, productId);
+        ProductDTO productDTO = productService.deleteFile(productId, fileUrl);
+        return ResponseEntity.ok(productDTO);
+    }
 
     /**
      * ایجاد محصول جدید

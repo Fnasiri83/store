@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,7 @@ public class CategoryService {
     private ProductAttributeValueRepository productAttributeValueRepository;
     @Autowired
     private ProductRepository productRepository;
+
     /**
      * ایجاد دسته‌بندی جدید
      */
@@ -53,6 +55,10 @@ public class CategoryService {
         }
         return categoryMapper.toDto(savedCategory);
     }
+    /**
+     * upload file
+     */
+
 //    public CategoryDTO create(CategoryDTO dto) {
 //        Category category = categoryMapper.toEntity(dto);
 //        return categoryMapper.toDto(categoryRepository.save(category));

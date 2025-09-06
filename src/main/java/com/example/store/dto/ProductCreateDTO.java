@@ -30,6 +30,5 @@ public class ProductCreateDTO {
     @NotNull
     private Long categoryId;
     private List<ProductAttributeValueCreateDTO> attributeValues = new ArrayList<>();
-//    private ProductCondition condition;
-//    private String photoUrl;
 }
+//    private ProductCondition condition;

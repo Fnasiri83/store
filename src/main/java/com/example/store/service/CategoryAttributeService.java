@@ -114,12 +114,6 @@ public class CategoryAttributeService {
         return result;
     }
 
-//    public List<CategoryAttributeDTO> getByCategoryId(Long categoryId) {
-//        return categoryAttributeRepository.findByCategoryId(categoryId)
-//                .stream()
-//                .map(categoryAttributeMapper::toDTO)
-//                .collect(Collectors.toList());
-//    }
 
     /**
      * حذف یک ویژگی از دسته‌بندی
@@ -131,3 +125,11 @@ public class CategoryAttributeService {
         categoryAttributeRepository.deleteById(id);
     }
 }
+
+
+//    public List<CategoryAttributeDTO> getByCategoryId(Long categoryId) {
+//        return categoryAttributeRepository.findByCategoryId(categoryId)
+//                .stream()
+//                .map(categoryAttributeMapper::toDTO)
+//                .collect(Collectors.toList());
+//    }

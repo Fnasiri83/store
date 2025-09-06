@@ -2,8 +2,7 @@ package com.example.store.controller;
 
 import com.example.store.dto.AttributeCreateDTO;
 import com.example.store.dto.AttributeDTO;
-import com.example.store.dto.CategoryAttributeCreateDTO;
-import com.example.store.dto.CategoryAttributeDTO;
+
 import com.example.store.service.AttributeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,7 @@ public class AttributeController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AttributeDTO create(@Valid @RequestBody AttributeCreateDTO dto) {
-        System.out.println("create=AttributeController ");
+        System.out.println("create=AttributeControllerقققق ");
         return attributeService.create(dto);
     }
     /**
@@ -60,27 +59,21 @@ public class AttributeController {
         attributeService.delete(id);
     }
 
-    /**
-     * =============================
-     * مدیریت CategoryAttribute
-     * =============================
-     */
 
 
+//    // افزودن ویژگی به یک دسته‌بندی
+//    @PostMapping("/categories")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public CategoryAttributeDTO addCategoryAttribute(@Valid @RequestBody CategoryAttributeCreateDTO dto) {
+//        System.out.println("اتصال ویژگی به دسته بندی=AttributeController ");
+//        return attributeService.addCategoryAttribute(dto);
+//    }
 
-    // افزودن ویژگی به یک دسته‌بندی
-    @PostMapping("/categories")
-    @ResponseStatus(HttpStatus.CREATED)
-    public CategoryAttributeDTO addCategoryAttribute(@Valid @RequestBody CategoryAttributeCreateDTO dto) {
-        System.out.println("اتصال ویژگی به دسته بندی=AttributeController ");
-        return attributeService.addCategoryAttribute(dto);
-    }
-
-    // حذف ویژگی از یک دسته‌بندی
-    @DeleteMapping("/categories/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCategoryAttribute(@PathVariable Long id) {
-        System.out.println("deleteCategoryAttribute=AttributeController ");
-        attributeService.deleteCategoryAttribute(id);
-    }
+//    // حذف ویژگی از یک دسته‌بندی
+//    @DeleteMapping("/categories/{id}")
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    public void deleteCategoryAttribute(@PathVariable Long id) {
+//        System.out.println("deleteCategoryAttribute=AttributeController ");
+//        attributeService.deleteCategoryAttribute(id);
+//    }
 }

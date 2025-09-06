@@ -31,6 +31,8 @@ public class ProductDTO {
     private Long categoryId;
     private String categoryName; // برای نمایش
     private List<ProductAttributeValueDTO> attributeValues = new ArrayList<>();
+    private List<String> fileUrls = new ArrayList<>();
+
 //    private ProductCondition condition; // 👈 اضافه شد
 //    private String photoUrl;
 }
